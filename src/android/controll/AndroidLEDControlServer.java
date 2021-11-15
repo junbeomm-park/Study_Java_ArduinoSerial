@@ -1,6 +1,7 @@
 package android.controll;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -15,13 +16,17 @@ public class AndroidLEDControlServer {
 				
 				@Override
 				public void run() {
+					while(true) {
 					try {
 						Socket client = server.accept();
 						String ip = client.getInetAddress().getHostName();
 						System.out.println(ip+"사용자접속!!!");
+						//클라이언트의 메시지를 읽는 쓰레드
+						new ReceiverThread(client).start();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+				}
 				}
 			});
 			t1.start();
@@ -31,8 +36,8 @@ public class AndroidLEDControlServer {
 		
 	}
 	public static void main(String[] args) {
-		
-
+		new AndroidLEDControlServer().connect();
 	}
+	
 
 }
